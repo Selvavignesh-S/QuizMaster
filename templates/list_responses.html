@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Quiz Attempts - QuizMaster</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body {
+            background: linear-gradient(135deg, #eef2ff 0%, #f8fafc 100%);
+            font-family: "Poppins", sans-serif;
+            margin: 0;
+            color: #1e293b;
+            min-height: 100vh;
+        }
+
+        .center-main {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 90vh;
+            padding: 1rem;
+        }
+
+        .outer-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(12px);
+            box-shadow: 0 10px 35px rgba(99, 102, 241, 0.15);
+            border-radius: 1.8rem;
+            padding: 2.5rem;
+            width: 95%;
+            max-width: 1200px;
+            transition: transform 0.2s ease;
+        }
+
+        .outer-card:hover {
+            transform: translateY(-3px);
+        }
+
+        h1 {
+            font-size: 2.2rem;
+            font-weight: 800;
+            color: #9333ea;
+            text-align: center;
+            margin-bottom: 2rem;
+            letter-spacing: 0.5px;
+        }
+
+        .attempt-card {
+            background: rgba(243, 244, 252, 0.87);
+            border-radius: 16px;
+            box-shadow: 0 2px 8px #e9e5fa;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .attempt-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(139, 92, 246, 0.12);
+        }
+
+        .attempt-card h3 {
+            color: #9333ea;
+            margin: 0 0 1.2rem 0;
+            font-size: 1.3rem;
+            font-weight: 700;
+        }
+
+        .attempt-info {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 1.2rem;
+        }
+
+        .info-item {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .info-label {
+            font-size: 0.85rem;
+            color: #6b7280;
+            margin-bottom: 0.4rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .info-value {
+            font-weight: 600;
+            color: #1f2937;
+            font-size: 1rem;
+        }
+
+        .score-badge {
+            display: inline-block;
+            padding: 0.5rem 1.2rem;
+            border-radius: 1.2rem;
+            font-weight: 700;
+            font-size: 1.15rem;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+        }
+
+        .score-high {
+            background: linear-gradient(135deg, #10B981, #059669);
+            color: white;
+        }
+
+        .score-medium {
+            background: linear-gradient(135deg, #F59E0B, #D97706);
+            color: white;
+        }
+
+        .score-low {
+            background: linear-gradient(135deg, #EF4444, #DC2626);
+            color: white;
+        }
+
+        .badge {
+            border-radius: 1.1em;
+            padding: 0.3em 0.9em;
+            font-weight: 600;
+            font-size: 0.9em;
+            display: inline-block;
+        }
+
+        .badge-success {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .empty-state {
+            text-align: center;
+            color: #6b7280;
+            font-size: 1.1em;
+            padding: 3rem;
+        }
+
+        .back-btn {
+            display: inline-block;
+            background: linear-gradient(135deg, #6366f1, #818cf8);
+            color: #fff;
+            border: none;
+            padding: 0.8em 2.4em;
+            border-radius: 1.6em;
+            font-weight: 700;
+            font-size: 1.05em;
+            box-shadow: 0 3px 10px rgba(99, 102, 241, 0.18);
+            margin-top: 1.5rem;
+            text-decoration: none;
+            transition: all 0.25s ease;
+            text-align: center;
+        }
+
+        .back-btn:hover {
+            transform: translateY(-2px);
+            background: linear-gradient(135deg, #4f46e5, #6366f1);
+        }
+
+        .btn-container {
+            text-align: center;
+            margin-top: 2rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="center-main">
+        <div class="outer-card">
+            <h1>📊 My Quiz Attempts</h1>
+
+            {% if attempts %}
+                {% for attempt in attempts %}
+                    <div class="attempt-card">
+                        <h3>{{ attempt[1] }}</h3>
+                        <div class="attempt-info">
+                            <div class="info-item">
+                                <span class="info-label">Score</span>
+                                {% if attempt[2] >= 75 %}
+                                    <span class="score-badge score-high">{{ '%.2f' % attempt[2] }}%</span>
+                                {% elif attempt[2] >= 50 %}
+                                    <span class="score-badge score-medium">{{ '%.2f' % attempt[2] }}%</span>
+                                {% else %}
+                                    <span class="score-badge score-low">{{ '%.2f' % attempt[2] }}%</span>
+                                {% endif %}
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">Class</span>
+                                <span class="info-value">{{ attempt[5] }}</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">Started At</span>
+                                <span class="info-value">{{ attempt[3] }}</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">Completed At</span>
+                                <span class="info-value">{{ attempt[4] }}</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">Duration</span>
+                                <span class="info-value">{{ attempt[6] }} mins</span>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <div class="empty-state">
+                    <p>You haven't attempted any quizzes yet.</p>
+                </div>
+            {% endif %}
+
+            <div class="btn-container">
+                <a href="{{ url_for('student_dashboard') }}" class="back-btn">← Back to Dashboard</a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
